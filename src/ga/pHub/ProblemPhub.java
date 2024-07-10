@@ -20,33 +20,39 @@ public class ProblemPhub extends Problem {
     public double Evaluate(Individual indiv) {
         double fitness = 0 - Double.MAX_VALUE;
         indiv.set_fitness(fitness);
-
-        indiv.get_chromosome().print();
-        int max_hub = instance.getNumberOfHubs();
-        System.out.println(indiv.get_length());
-        for(int i=0; i<indiv.get_length(); i++)
-            if(indiv.get_allele(i)==1)
-                max_hub-=1;
-        //int[] decodeInfo = endoder.decode(indiv);
-
-        //if(!isAllValuesValid(decodeInfo)) return fitness;
+        fitness = isAllValuesValid(indiv);
         //if(!isValuesSameToHubs(decodeInfo, instance.getNumberOfHubs())) return fitness;
 
         //fitness = 0 - calculateCost(decodeInfo);
         //
-        if(max_hub > 0)
-            max_hub = -max_hub;
-        indiv.set_fitness(max_hub);
-        return max_hub;
+        //if(max_hub > 0)
+        //    max_hub = -max_hub;
+        //indiv.set_fitness(max_hub);
+        if(fitness == 0){
+            fitness = 0 - calculateCost(endoder.decode(indiv));
+        }else{
+            fitness = 0 - Double.MAX_VALUE;
+        }
+        indiv.set_fitness(fitness);
+        return fitness;
     }
 
-    private boolean isAllValuesValid(int[] decodeInfo){
-        for(int i = 0 ; i < decodeInfo.length ; i++){
-            if(decodeInfo[i] < 0 || decodeInfo[i] >= instance.getNumberOfNodes()){
-                return false;
-            }
+    private int isAllValuesValid(Individual indiv){
+        int[] predecodeInfo = endoder.predecode(indiv);
+        int max_hub = instance.getNumberOfHubs();
+        for(int i=0; i< predecodeInfo.length; i++){
+            if(predecodeInfo[i] == 0)
+                max_hub -=1;
+            if(predecodeInfo[i] > instance.getNumberOfHubs())
+                max_hub -= instance.getNumberOfHubs() * 2;
         }
-        return true;
+
+        if(max_hub > 0)
+            max_hub = -max_hub;
+
+        
+        
+        return max_hub;
     }
 
     //Calculate cost

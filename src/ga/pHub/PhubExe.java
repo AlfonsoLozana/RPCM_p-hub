@@ -13,7 +13,7 @@ public class PhubExe {
 
     PhubParser parser = new PhubParser();
     // Parser file
-    List<PhubInstance> instances = parser.parse(args.length > 0 ? args[0] : "/RPCM_p-hub/resources/phub1.txt");
+    List<PhubInstance> instances = parser.parse(args.length > 0 ? args[0] : "/RPCM_p-hub/resources/phub10_2.txt");
     if (instances == null) {
       System.out.println("Error parsing file");
       return;
@@ -23,17 +23,20 @@ public class PhubExe {
     for (PhubInstance instance : instances) {
 
 
-      DefaultConfig config = new DefaultConfig(instance.getNumberOfNodes(),instance.getBits(),512,0.8,500);
+      DefaultConfig config = new DefaultConfig(instance.getNumberOfNodes(),instance.getBits(),512,0.8,500000);
       Encoder encoder = new Encoder(instance);
       Problem problem = new ProblemPhub(instance,encoder);
       problem.set_target_fitness(0);
       ExeInstance<PhubInstance> executer = new ExeInstance<PhubInstance>();
       Individual individual =  executer.Execute(problem, config, args);
       System.out.println("Solution: ");
-      for(int i = 0 ; i < instance.getNumberOfNodes() ; i++){
-        System.out.print(encoder.decode(individual)[i]);
-        System.out.print(" ");
+      int[] decode = encoder.decode(individual);
+      System.out.println("decode: ");
+      for(int i = 0 ; i < decode.length ; i++){
+        System.out.print(decode[i] + " ");
       }
+      System.out.println(" ");
+      System.out.println(individual.get_fitness());
     }
   }
 
