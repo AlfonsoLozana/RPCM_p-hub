@@ -13,7 +13,7 @@ public class PhubExe {
 
     PhubParser parser = new PhubParser();
     // Parser file
-    List<PhubInstance> instances = parser.parse(args.length > 0 ? args[0] : "/RPCM_p-hub/resources/phub0.txt");
+    List<PhubInstance> instances = parser.parse(args.length > 0 ? args[0] : "/RPCM_p-hub/resources/phub1.txt");
     if (instances == null) {
       System.out.println("Error parsing file");
       return;
@@ -23,7 +23,7 @@ public class PhubExe {
     for (PhubInstance instance : instances) {
 
 
-      DefaultConfig config = new DefaultConfig(instance.getNumberOfNodes(),instance.getBits(),512,0.8,500000000);
+      DefaultConfig config = new DefaultConfig(instance.getNumberOfNodes(),instance.getBits(),512,0.8,500);
       Encoder encoder = new Encoder(instance);
       Problem problem = new ProblemPhub(instance,encoder);
       problem.set_target_fitness(0);

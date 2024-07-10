@@ -19,6 +19,7 @@ public class ProblemOneMax extends Problem{
     //}
 
     public double Evaluate(Individual Indiv) {
+      Indiv.get_chromosome().print();
       return ONEMAX(Indiv) ;
     }
 

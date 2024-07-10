@@ -21,15 +21,23 @@ public class ProblemPhub extends Problem {
         double fitness = 0 - Double.MAX_VALUE;
         indiv.set_fitness(fitness);
 
-        int[] decodeInfo = endoder.decode(indiv);
+        indiv.get_chromosome().print();
+        int max_hub = instance.getNumberOfHubs();
+        System.out.println(indiv.get_length());
+        for(int i=0; i<indiv.get_length(); i++)
+            if(indiv.get_allele(i)==1)
+                max_hub-=1;
+        //int[] decodeInfo = endoder.decode(indiv);
 
-        if(!isAllValuesValid(decodeInfo)) return fitness;
-        if(!isValuesSameToHubs(decodeInfo, instance.getNumberOfHubs())) return fitness;
+        //if(!isAllValuesValid(decodeInfo)) return fitness;
+        //if(!isValuesSameToHubs(decodeInfo, instance.getNumberOfHubs())) return fitness;
 
-        fitness = 0 - calculateCost(decodeInfo);
-        
-        indiv.set_fitness(fitness);
-        return fitness;
+        //fitness = 0 - calculateCost(decodeInfo);
+        //
+        if(max_hub > 0)
+            max_hub = -max_hub;
+        indiv.set_fitness(max_hub);
+        return max_hub;
     }
 
     private boolean isAllValuesValid(int[] decodeInfo){

@@ -9,6 +9,8 @@ public class ExeInstance<TInstance> {
     public Individual Execute(Problem problem, Config config, String args[]) throws Exception {
         problem.set_geneN(config.getGeneNumber());
         problem.set_geneL(config.getGeneLength());
+        System.out.println("Lenght");
+        System.out.println(config.getGeneLength());
         problem.set_target_fitness(config.getTargetFitness());
 
         Algorithm ga; // The ssGA being used
