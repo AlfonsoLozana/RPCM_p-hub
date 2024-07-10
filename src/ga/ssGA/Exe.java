@@ -23,7 +23,7 @@ public class Exe
 */
       
     // PARAMETERS ONEMAX
-    int    gn         = 512;                          // Gene number
+    int    gn         = 52;                          // Gene number
     int    gl         = 1;                            // Gene length
     int    popsize    = 512;                          // Population size
     double pc         = 0.8;                          // Crossover probability
