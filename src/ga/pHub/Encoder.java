@@ -16,7 +16,7 @@ public class Encoder {
         for(int i = 0 ; i < indiv.get_length() ; i+=instance.getBits()){
             byte[] binary = new byte[instance.getBits()];
             for(int j = 0 ; j < instance.getBits() ; j++){
-                binary[j] = indiv.get_allele(i+j);
+                binary[instance.getBits()- 1- j] = indiv.get_allele(i+j);
             }
             decode[index] = convertToDecimal(binary);
             index++;
@@ -26,28 +26,32 @@ public class Encoder {
 
     public int[] decode(Individual indiv){
         int[] decode = new int[instance.getNumberOfNodes()];
-        int[] phub = new int[instance.getNumberOfNodes()];
-        int num_phub = 0;
-        int index = 0;
-        for(int i = 0 ; i < indiv.get_length() ; i+=instance.getBits()){
-            byte[] binary = new byte[instance.getBits()];
-            for(int j = 0 ; j < instance.getBits() ; j++){
-                binary[j] = indiv.get_allele(i+j);
+        int[] precode = predecode(indiv);
+        int[] hub = new int[instance.getNumberOfHubs()];
+        int numHub = 0;
+
+        System.out.println("precode: ");
+        for(int i = 0; i < precode.length ; i++){
+            if(precode[i] == 0){
+                hub[numHub] = i + 1;
+                numHub++;
             }
-            decode[index] = convertToDecimal(binary);
-            
-            if(decode[index] == 0){
-                phub[num_phub] = i/instance.getBits() + 1;
-                num_phub += 1;
+            System.out.print(precode[i] + " ");;
+        }
+        System.out.println(" ");
+        System.out.println("Decode: ");
+        for(int i = 0; i < precode.length ; i++){
+            if(precode[i] == 0){
+                decode[i] = i + 1;
+            }else{
+                decode[i] = hub[precode[i]-1];
             }
-            index++;
+
+            System.out.print(decode[i] + " ");
         }
+        System.out.println(" ");
 
 
-
-        for(int i=0; i < decode.length; i++){
-            decode[i] = decode[i] == 0 ? i  : phub[decode[i]-1] -1;
-        }
 
 
         return decode;

@@ -21,13 +21,10 @@ public class PhubParser {
         List<PhubInstance> instances = new ArrayList<>();
         int currentIndex = 0;
 
-        System.out.println("Paso 1");
 
         try {
             // Lee el número de nodos
             int numberOfNodes = Integer.parseInt(lines[currentIndex++].trim());
-
-            System.out.println("Paso 1");
             // Lee las coordenadas de los nodos
             double[][] nodeCoordinates = new double[numberOfNodes][2];
             for (int i = 0; i < numberOfNodes; i++) {
@@ -45,15 +42,11 @@ public class PhubParser {
                 }
             }
 
-            System.out.println("Paso 3");
-
             // Lee el número de hubs y los costos
             int numberOfHubs = Integer.parseInt(lines[currentIndex++].trim());
             double collectionCost = Double.parseDouble(lines[currentIndex++].trim());
             double transferCost = Double.parseDouble(lines[currentIndex++].trim());
             double distributionCost = Double.parseDouble(lines[currentIndex++].trim());
-
-            System.out.println("Paso 4");
 
             // Crea una instancia de PhubInstance y agrégala a la lista
             PhubInstance phubInstance = new PhubInstanceImpl(numberOfNodes, numberOfHubs,flows, nodeCoordinates, 

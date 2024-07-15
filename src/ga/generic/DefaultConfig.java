@@ -9,11 +9,12 @@ public class DefaultConfig implements Config {
     private int populationSize = 512;
     private double crossoverProbability = 0.8;
     private long maxIterations = 5000;
+    private double mutationProbability = 0;
 
     public DefaultConfig() {
     }
 
-    public DefaultConfig(int geneNumber, int geneLength, int populationSize, double crossoverProbability, long maxIterations) {
+    public DefaultConfig(int geneNumber, int geneLength, int populationSize, double crossoverProbability, long maxIterations, double mutationProbability) {
         //check null parameters
 
         this.geneNumber = geneNumber;
@@ -21,6 +22,7 @@ public class DefaultConfig implements Config {
         this.populationSize = populationSize;
         this.crossoverProbability = crossoverProbability;
         this.maxIterations = maxIterations;
+        this.mutationProbability = mutationProbability;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class DefaultConfig implements Config {
 
     @Override
     public double getMutationProbability() {
-        return 1.0 / (double) (getGeneNumber() * getGeneLength());
+        return mutationProbability == 0 ? 1.0 / (double) (getGeneNumber() * getGeneLength()) : mutationProbability;
     }
 
     @Override

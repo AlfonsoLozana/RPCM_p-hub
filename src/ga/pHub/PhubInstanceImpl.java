@@ -22,7 +22,7 @@ public class PhubInstanceImpl implements PhubInstance {
         this.transferCost = transferCost;
         this.distributionCost = distributionCost;
         this.coordinates = coordinates;
-        this.bits = calculateBits(numberOfHubs+1);
+        this.bits = calculateBits(numberOfHubs);
     }
 
 
@@ -71,7 +71,6 @@ public class PhubInstanceImpl implements PhubInstance {
         if (decimalNumber == 0) {
             return 1;
         }
-    
         return (int) (Math.log(Math.abs(decimalNumber)) / Math.log(2)) + 1;
     }
     

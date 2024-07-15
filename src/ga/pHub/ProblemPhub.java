@@ -1,5 +1,7 @@
 package ga.pHub;
 
+import java.util.ArrayList;
+
 import ga.pHub.interfaces.PhubInstance;
 import ga.ssGA.Individual;
 import ga.ssGA.Problem;
@@ -18,20 +20,14 @@ public class ProblemPhub extends Problem {
 
     @Override
     public double Evaluate(Individual indiv) {
-        double fitness = 0 - Double.MAX_VALUE;
+        double fitness = 0;
         indiv.set_fitness(fitness);
         fitness = isAllValuesValid(indiv);
-        //if(!isValuesSameToHubs(decodeInfo, instance.getNumberOfHubs())) return fitness;
-
-        //fitness = 0 - calculateCost(decodeInfo);
-        //
-        //if(max_hub > 0)
-        //    max_hub = -max_hub;
-        //indiv.set_fitness(max_hub);
+        System.err.println(fitness);
         if(fitness == 0){
+            
             fitness = 0 - calculateCost(endoder.decode(indiv));
-        }else{
-            fitness = 0 - Double.MAX_VALUE;
+            //System.out.println("Bien: " + fitness);
         }
         indiv.set_fitness(fitness);
         return fitness;
@@ -52,64 +48,92 @@ public class ProblemPhub extends Problem {
 
         
         
-        return max_hub;
+        return max_hub * 100000;
     }
 
+    
     //Calculate cost
     private double calculateCost(int[] decodeInfo){
-        return calculateColectionCost(decodeInfo) + calculateTransferCost(decodeInfo) + calculateDistributionCost(decodeInfo);
+
+        // Asumiendo que decodeInfo es un objeto que se pasa como argumento
+        // y que las funciones calculateCollectionCost, calculateTransferCost
+        // y calculateDistributionCost están correctamente definidas
+
+        double collectionCost = calculateCollectionCost(decodeInfo);
+        double transferCost = calculateTransferCost(decodeInfo);
+        double distributionCost = calculateDistributionCost(decodeInfo);
+
+       System.out.println("Collection Cost: " + collectionCost);
+       System.out.println("Transfer Cost: " + transferCost);
+       System.out.println("Distribution Cost: " + distributionCost);
+
+        double totalCost = collectionCost + transferCost + distributionCost;
+        return totalCost;
+
     }
 
 
     //Colection cost
-    private double calculateColectionCost(int[] decodeInfo){
-        double cost = 0;
-        for(int i = 0 ; i < decodeInfo.length ; i++){
-            cost += calculateDistance(i, decodeInfo[i]) * instance.getCollectionCost() * calculateFlowCost(i, decodeInfo[i]);
+    private double calculateCollectionCost(int[] decodeInfo) {
+        double cost = 0.0;
+        int n = instance.getNumberOfNodes();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if(decodeInfo[i] -1 == i) continue;
+                double distance = euclideanDistance(instance.getCoordinates()[i], instance.getCoordinates()[decodeInfo[i] -1]);
+                cost += instance.getFlows()[i][j] * instance.getCollectionCost() * distance;
+            }
         }
+
         return cost;
     }
 
-    private double calculateTransferCost(int[] decodeInfo){
-        double cost = 0;
-        for(int i = 0 ; i < decodeInfo.length ; i++){
-            cost += calculateDistance(i, decodeInfo[i]) * instance.getTransferCost() * calculateFlowCost(i, decodeInfo[i]);
+    private double calculateTransferCost(int[] decodeInfo) {
+        double cost = 0.0;
+        int n = instance.getNumberOfNodes();
+        double[][] hubFlows = new double[n][n]; // Matriz para almacenar los flujos entre hubs
+
+        // Calculando los flujos totales entre hubs
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int hubI = decodeInfo[i] - 1;
+                int hubJ = decodeInfo[j] - 1;
+                hubFlows[hubI][hubJ] += instance.getFlows()[i][j];
+            }
         }
+
+        // Calculando el costo de transferencia entre hubs
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j) { // Solo calculamos costos entre diferentes hubs
+                    double distance = euclideanDistance(instance.getCoordinates()[i], instance.getCoordinates()[j]);
+                    cost += hubFlows[i][j] * instance.getTransferCost() * distance;
+                }
+            }
+        }
+
         return cost;
     }
 
-    private double calculateDistributionCost(int[] decodeInfo){
-        double cost = 0;
-        for(int i = 0 ; i < decodeInfo.length ; i++){
-            cost += calculateDistance(i, decodeInfo[i]) * instance.getDistributionCost() * calculateFlowCost(i, decodeInfo[i]);
+    private double calculateDistributionCost(int[] decodeInfo) {
+        double cost = 0.0;
+        int n = instance.getCoordinates().length;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if(decodeInfo[i] -1 == i) continue;
+                double distance = euclideanDistance(instance.getCoordinates()[decodeInfo[j]-1], instance.getCoordinates()[j]);
+                cost += instance.getFlows()[i][j] * instance.getDistributionCost() * distance;
+            }
         }
+
         return cost;
     }
-
-    //Calculatge flow cost between two nodes
-    private double calculateFlowCost(int node1, int node2){
-        return instance.getFlows()[node1][node2] * calculateDistance(node1, node2) * instance.getDistributionCost();
-    }
-
-    //Calculate distribution cost
-
-
 
     //Calculate distance between two nodes
-    private double calculateDistance(int node1, int node2){
-        double x1 = instance.getCoordinates()[node1][0];
-        double y1 = instance.getCoordinates()[node1][1];
-        double x2 = instance.getCoordinates()[node2][0];
-        double y2 = instance.getCoordinates()[node2][1];
-        return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-    }
-
-
-    //Check if number o diferent values is equal to number of hubs
-    private boolean isValuesSameToHubs(int[] decodeInfo, int numberOfHubs){
-        //calculate number of diferent values
-        int[] diferentValues = new int[instance.getNumberOfNodes()];
-        return diferentValues.length == numberOfHubs;
+    private double euclideanDistance(double[] point1, double[] point2) {
+        return Math.sqrt(Math.pow(point2[0] - point1[0], 2) + Math.pow(point2[1] - point1[1], 2)) / 10000;
     }
     
 }
