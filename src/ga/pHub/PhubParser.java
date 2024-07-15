@@ -1,24 +1,18 @@
 package ga.pHub;
-
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import ga.pHub.interfaces.PhubInstance;
 
 public class PhubParser {
     
-    public List<PhubInstance> parse(String path) {
+    public PhubInstance parse(String path) {
         String[] lines = loadFile(path);
 
         if (lines == null)
             return null;
 
-        System.out.println("Parsing file");
-
-        List<PhubInstance> instances = new ArrayList<>();
         int currentIndex = 0;
 
 
@@ -51,13 +45,13 @@ public class PhubParser {
             // Crea una instancia de PhubInstance y agrégala a la lista
             PhubInstance phubInstance = new PhubInstanceImpl(numberOfNodes, numberOfHubs,flows, nodeCoordinates, 
                     collectionCost, transferCost, distributionCost);
-            instances.add(phubInstance);
+            return phubInstance;
 
         } catch (Exception e) {
             System.out.println("Error parsing file: " + e.getMessage());
         }
 
-        return instances;
+        return null;
     }
 
     private String[] loadFile(String path) {

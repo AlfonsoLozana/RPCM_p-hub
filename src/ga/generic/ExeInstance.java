@@ -20,9 +20,6 @@ public class ExeInstance<TInstance> {
             run.addFitness(ga.get_bestf());
             if ((problem.tf_known()) &&
                     (ga.get_solution()).get_fitness() >= problem.get_target_fitness()) {
-                System.out.print("Solution Found! After ");
-                System.out.print(problem.get_fitness_counter());
-                System.out.println(" evaluations");
                 return ga.get_solution();
             }
 

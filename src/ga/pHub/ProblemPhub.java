@@ -23,11 +23,9 @@ public class ProblemPhub extends Problem {
         double fitness = 0;
         indiv.set_fitness(fitness);
         fitness = isAllValuesValid(indiv);
-        System.err.println(fitness);
         if(fitness == 0){
             
             fitness = 0 - calculateCost(endoder.decode(indiv));
-            //System.out.println("Bien: " + fitness);
         }
         indiv.set_fitness(fitness);
         return fitness;
@@ -45,8 +43,6 @@ public class ProblemPhub extends Problem {
 
         if(max_hub > 0)
             max_hub = -max_hub;
-
-        
         
         return max_hub * 100000;
     }
@@ -54,22 +50,7 @@ public class ProblemPhub extends Problem {
     
     //Calculate cost
     private double calculateCost(int[] decodeInfo){
-
-        // Asumiendo que decodeInfo es un objeto que se pasa como argumento
-        // y que las funciones calculateCollectionCost, calculateTransferCost
-        // y calculateDistributionCost están correctamente definidas
-
-        double collectionCost = calculateCollectionCost(decodeInfo);
-        double transferCost = calculateTransferCost(decodeInfo);
-        double distributionCost = calculateDistributionCost(decodeInfo);
-
-       System.out.println("Collection Cost: " + collectionCost);
-       System.out.println("Transfer Cost: " + transferCost);
-       System.out.println("Distribution Cost: " + distributionCost);
-
-        double totalCost = collectionCost + transferCost + distributionCost;
-        return totalCost;
-
+        return calculateCollectionCost(decodeInfo) + calculateTransferCost(decodeInfo) + calculateDistributionCost(decodeInfo);
     }
 
 
@@ -92,9 +73,8 @@ public class ProblemPhub extends Problem {
     private double calculateTransferCost(int[] decodeInfo) {
         double cost = 0.0;
         int n = instance.getNumberOfNodes();
-        double[][] hubFlows = new double[n][n]; // Matriz para almacenar los flujos entre hubs
+        double[][] hubFlows = new double[n][n]; 
 
-        // Calculando los flujos totales entre hubs
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int hubI = decodeInfo[i] - 1;
@@ -103,11 +83,10 @@ public class ProblemPhub extends Problem {
             }
         }
 
-        // Calculando el costo de transferencia entre hubs
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (i != j) { // Solo calculamos costos entre diferentes hubs
-                    double distance = euclideanDistance(instance.getCoordinates()[i], instance.getCoordinates()[j]);
+                if (i != j && decodeInfo[i] != decodeInfo[j]) { 
+                    double distance = euclideanDistance(instance.getCoordinates()[decodeInfo[i]-1], instance.getCoordinates()[decodeInfo[j]-1]);
                     cost += hubFlows[i][j] * instance.getTransferCost() * distance;
                 }
             }

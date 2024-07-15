@@ -30,7 +30,6 @@ public class GeneticAlgorithmRun {
         return maxIterations;
     }
 
-
     public double getCrossoverProbability() {
         return crossoverProbability;
     }

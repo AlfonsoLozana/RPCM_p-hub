@@ -30,30 +30,20 @@ public class Encoder {
         int[] hub = new int[instance.getNumberOfHubs()];
         int numHub = 0;
 
-        System.out.println("precode: ");
         for(int i = 0; i < precode.length ; i++){
             if(precode[i] == 0){
                 hub[numHub] = i + 1;
                 numHub++;
             }
-            System.out.print(precode[i] + " ");;
         }
-        System.out.println(" ");
-        System.out.println("Decode: ");
+
         for(int i = 0; i < precode.length ; i++){
             if(precode[i] == 0){
                 decode[i] = i + 1;
             }else{
                 decode[i] = hub[precode[i]-1];
             }
-
-            System.out.print(decode[i] + " ");
         }
-        System.out.println(" ");
-
-
-
-
         return decode;
     }
 
